@@ -41,6 +41,20 @@ const Header = () => {
     setOpenMenu(false);
   };
 
+  const truncAddress = (str:string) => {
+    return `${str.slice(0,6)}...${str.slice(str.length - 6)}`;
+  }
+
+  const handleConnect = () => {
+    if((window as any).ethereum) {
+      (window as any).ethereum.request({method:'eth_requestAccounts'}).then((res:any) => {
+        setContent(truncAddress(res[0]));
+      })
+    } else {
+      alert("install metamask extension!")
+    }
+  };
+
   return (
     <div className="flex justify-between">
       <div className="hidden md:flex gap-8 items-center">
@@ -62,7 +76,7 @@ const Header = () => {
         />
       </div>
       <button
-        // onClick={handleConnect}
+        onClick={handleConnect}
         className="hidden md:flex px-8 py-2 rounded-full text-lg font-bold hover:text-app-dark-headerColor bg-app-blue-connect text-app-blue-connectButton active:text-blue-600 active:bg-blue-500"
       >
         {content}
