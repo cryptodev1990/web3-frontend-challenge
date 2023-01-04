@@ -5,7 +5,7 @@ import HamburgerMenu from "../assets/menu.svg";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [id, setId] = useState(1);
+  const [id, setId] = useState(0);
   const [openMenu, setOpenMenu] = useState(false);
   const [content, setContent] = useState("Connect");
 
