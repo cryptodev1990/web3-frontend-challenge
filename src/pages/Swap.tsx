@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SelectToken from "../components/SelectToken";
 import { ethers } from "ethers";
 import { useAppContext } from "../contexts/AppContext";
@@ -11,13 +11,23 @@ const Swap = () => {
 
   const [amountFoo, setAmountFoo] = useState(1);
 
+  const fooBalance = async () => {
+    if (context?.connected === true) {
+      setFooAmount(Number(await context?.fooToken.balanceOf(context?.address)));
+    }
+  };
+
+  useEffect(() => {
+    fooBalance();
+  }, [context]);
+
   const HandleApprove = async () => {
     if (context?.connected === false) {
       window.alert("Please connect Wallet");
     } else {
       const amountNumber = amountFoo.toString();
-      setFooAmount(Number(await context?.fooToken.balanceOf(context?.address)));
       const amount = Number(ethers.utils.parseUnits(amountNumber));
+      console.log(amount > fooAmount);
       if (amount > fooAmount)
         window.alert("Inputed amount is bigger than your wallet balance!");
       else {

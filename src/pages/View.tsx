@@ -7,7 +7,7 @@ const View = () => {
 
   const context = useAppContext();
 
-  const cons = async () => {
+  const balance = async () => {
     if (context?.connected === false) {
       window.alert("Please connect Wallet");
     } else {
@@ -21,7 +21,7 @@ const View = () => {
   };
 
   useEffect(() => {
-    cons();
+    balance();
   }, [context]);
 
   return (
