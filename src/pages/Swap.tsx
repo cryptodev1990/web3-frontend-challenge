@@ -3,14 +3,13 @@ import SelectToken from "../components/SelectToken";
 import { ethers } from "ethers";
 import { useAppContext } from "../contexts/AppContext";
 
-const Proposal = () => {
+const Swap = () => {
   const context = useAppContext();
 
   const [amountFoo, setAmountFoo] = useState(1);
-  const [amountBar, setAmountBar] = useState(1);
 
   const HandleApprove = async () => {
-    const exchange_rate = (amountFoo / amountBar).toString();
+    const exchange_rate = amountFoo.toString();
     const rate = ethers.utils.parseUnits(exchange_rate);
     const exchangeAddress = process.env.REACT_APP_EXCHANGE_ADDRESS;
     await context?.fooToken
@@ -18,10 +17,12 @@ const Proposal = () => {
       .approve(exchangeAddress, rate);
   };
 
+  const HandleMint = async () => await context?.fooToken.connect(context?.wallet).fund();
+
   const HandleSwap = async () => {
     const fooTokenAddress = process.env.REACT_APP_FOO_TOKEN_ADDRESS;
     const barTokenAddress = process.env.REACT_APP_BAR_TOKEN_ADDRESS;
-    const exchange_rate = (amountFoo / amountBar).toString();
+    const exchange_rate = amountFoo.toString();
     const rate = ethers.utils.parseUnits(exchange_rate);
     await context?.exchange
       .connect(context?.wallet)
@@ -34,12 +35,17 @@ const Proposal = () => {
         <h2 className="mb-3 text-3xl px-3">FooBar Swap</h2>
         <div className="flex flex-col gap-5">
           <SelectToken token="Foo" setAmount={setAmountFoo} />
-          <SelectToken token="Bar" setAmount={setAmountBar} />
+          <button
+            onClick={HandleMint}
+            className="flex justify-center items-center rounded-full bg-app-blue-swapConnect text-app-blue-swapConnectButton text-2xl py-2 hover:text-app-dark-headerColor active:text-app-blue-connectButton active:bg-blue-900"
+          >
+            Mint
+          </button>
           <button
             onClick={HandleApprove}
             className="flex justify-center items-center rounded-full bg-app-blue-swapConnect text-app-blue-swapConnectButton text-2xl py-2 hover:text-app-dark-headerColor active:text-app-blue-connectButton active:bg-blue-900"
           >
-            Send Proposal
+            Approve
           </button>
           <button
             onClick={HandleSwap}
@@ -53,4 +59,4 @@ const Proposal = () => {
   );
 };
 
-export default Proposal;
+export default Swap;

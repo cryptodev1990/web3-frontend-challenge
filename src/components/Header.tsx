@@ -8,28 +8,18 @@ const Header = () => {
   const context = useAppContext();
 
   const navigate = useNavigate();
-  const [id, setId] = useState(0);
+  const [id, setId] = useState(1);
   const [openMenu, setOpenMenu] = useState(false);
   const [content, setContent] = useState("Connect");
 
-  const MintClick = () => {
-    setId(0);
-    navigate("/");
-  }
-
-  const MintHambugerClick = () => {
-    setId(0);
-    navigate("/");
-  }
-
-  const ProposalClick = () => {
+  const SwapClick = () => {
     setId(1);
-    navigate("/proposal");
+    navigate("/swap");
   };
 
-  const ProposalHambugerClick = () => {
+  const SwapHambugerClick = () => {
     setId(1);
-    navigate("/proposal");
+    navigate("/swap");
     setOpenMenu(false);
   };
 
@@ -63,14 +53,9 @@ const Header = () => {
       <div className="hidden md:flex gap-8 items-center">
         <h1 className="text-2xl mr-10">FooBar</h1>
         <NavButton
-          content="Mint"
-          clicked={id === 0}
-          handleClick={MintClick}
-        />
-        <NavButton
-          content="Proposal"
+          content="Swap"
           clicked={id === 1}
-          handleClick={ProposalClick}
+          handleClick={SwapClick}
         />
         <NavButton
           content="Balance"
@@ -101,14 +86,9 @@ const Header = () => {
         </div>
         <div className="flex flex-col w-full justify-center items-center gap-8 pt-10">
           <NavButton
-            content="Mint"
-            clicked={id === 0}
-            handleClick={MintHambugerClick}
-          />
-          <NavButton
-            content="Proposal"
+            content="Swap"
             clicked={id === 1}
-            handleClick={ProposalHambugerClick}
+            handleClick={SwapHambugerClick}
           />
           <NavButton
             content="Balance"
