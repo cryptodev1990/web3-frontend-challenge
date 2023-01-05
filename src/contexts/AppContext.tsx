@@ -16,12 +16,18 @@ interface AppContextInterface {
   barToken: any;
   exchange: any;
   address: string;
+  connected: boolean;
   connectWallet: VoidFunction;
 }
 
 export const AppContext = createContext<AppContextInterface | null>(null);
 
 export const AppContextProvider = ({ children }: Props) => {
+
+  const [address, setAddress] = useState("");
+
+  const [connected, setConnected] = useState(false);
+
   const privatekey: string = process.env.REACT_APP_PRIVATE_KEY as string;
 
   const FooTokenAddress: string = process.env
@@ -40,14 +46,13 @@ export const AppContextProvider = ({ children }: Props) => {
   const barToken = BarToken__factory.connect(BarTokenAddress, provider);
   const exchange = Exchange__factory.connect(ExchangeAddress, provider);
 
-  const [address, setAddress] = useState("");
-
   const connectWallet = async () => {
     if ((window as any).ethereum) {
       const res = await (window as any).ethereum.request({
         method: "eth_requestAccounts",
       });
       setAddress(res[0]);
+      setConnected(true);
     } else {
       alert("install metamask extension!");
     }
@@ -62,6 +67,7 @@ export const AppContextProvider = ({ children }: Props) => {
           barToken,
           exchange,
           address,
+          connected,
           connectWallet,
         } as AppContextInterface
       }

@@ -7,28 +7,48 @@ import Button from "../components/Button";
 const Swap = () => {
   const context = useAppContext();
 
+  const [fooAmount, setFooAmount] = useState(0);
+
   const [amountFoo, setAmountFoo] = useState(1);
 
   const HandleApprove = async () => {
-    const amountNumber = amountFoo.toString();
-    const amount = ethers.utils.parseUnits(amountNumber);
-    const exchangeAddress = process.env.REACT_APP_EXCHANGE_ADDRESS;
-    await context?.fooToken
-      .connect(context?.wallet)
-      .approve(exchangeAddress, amount);
+    if (context?.connected === false) {
+      window.alert("Please connect Wallet");
+    } else {
+      const amountNumber = amountFoo.toString();
+      setFooAmount(Number(await context?.fooToken.balanceOf(context?.address)));
+      const amount = Number(ethers.utils.parseUnits(amountNumber));
+      if (amount > fooAmount)
+        window.alert("Inputed amount is bigger than your wallet balance!");
+      else {
+        const exchangeAddress = process.env.REACT_APP_EXCHANGE_ADDRESS;
+        await context?.fooToken
+          .connect(context?.wallet)
+          .approve(exchangeAddress, amount);
+      }
+    }
   };
 
-  const HandleMint = async () =>
-    await context?.fooToken.connect(context?.wallet).fund();
+  const HandleMint = async () => {
+    if (context?.connected === false) {
+      window.alert("Please connect Wallet");
+    } else {
+      await context?.fooToken.connect(context?.wallet).fund();
+    }
+  };
 
   const HandleSwap = async () => {
-    const fooTokenAddress = process.env.REACT_APP_FOO_TOKEN_ADDRESS;
-    const barTokenAddress = process.env.REACT_APP_BAR_TOKEN_ADDRESS;
-    const amountNumber = amountFoo.toString();
-    const amount = ethers.utils.parseUnits(amountNumber);
-    await context?.exchange
-      .connect(context?.wallet)
-      .swap(fooTokenAddress, barTokenAddress, amount);
+    if (context?.connected === false) {
+      window.alert("Please connect Wallet");
+    } else {
+      const fooTokenAddress = process.env.REACT_APP_FOO_TOKEN_ADDRESS;
+      const barTokenAddress = process.env.REACT_APP_BAR_TOKEN_ADDRESS;
+      const amountNumber = amountFoo.toString();
+      const amount = ethers.utils.parseUnits(amountNumber);
+      await context?.exchange
+        .connect(context?.wallet)
+        .swap(fooTokenAddress, barTokenAddress, amount);
+    }
   };
 
   return (

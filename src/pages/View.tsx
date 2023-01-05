@@ -8,9 +8,17 @@ const View = () => {
   const context = useAppContext();
 
   const cons = async () => {
-    setBarAmount(Number(await context?.barToken.balanceOf(context?.address))/(10**18));
-    setFooAmount(Number(await context?.fooToken.balanceOf(context?.address))/(10**18))
-  }
+    if (context?.connected === false) {
+      window.alert("Please connect Wallet");
+    } else {
+      setBarAmount(
+        Number(await context?.barToken.balanceOf(context?.address)) / 10 ** 18
+      );
+      setFooAmount(
+        Number(await context?.fooToken.balanceOf(context?.address)) / 10 ** 18
+      );
+    }
+  };
 
   useEffect(() => {
     cons();
