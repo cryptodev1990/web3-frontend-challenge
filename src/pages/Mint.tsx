@@ -5,7 +5,7 @@ const Mint = () => {
 
   const context = useAppContext();
 
-  const HandleMint = async () => await (context as any).fooToken.connect((context as any).wallet).fund();
+  const HandleMint = async () => await context?.fooToken.connect(context?.wallet).fund();
 
   return (
     <div className="flex justify-center py-32">

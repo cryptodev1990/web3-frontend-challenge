@@ -12,10 +12,10 @@ const SelectToken = (props: PropType) => {
       <input
         className="bg-app-dark-token outline-none font-bold text-app-dark-amountColor placeholder-app-dark-amountColor text-3xl w-1/2"
         type="number"
-        min={1}
+        min="1"
         placeholder="1"
         name="tokenAmount"
-        onChange={(e) => props.setAmount((e as any).target.value)}
+        onChange={async (e) => await props.setAmount(e?.target.value)}
       />
       <h2 className="bg-app-dark-select px-8 py-2 rounded-full font-semibold text-xl">
         {props.token}

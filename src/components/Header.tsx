@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavButton from "./NavButton";
 import { useNavigate } from "react-router-dom";
 import HamburgerMenu from "../assets/menu.svg";
+import { useAppContext } from "../contexts/AppContext";
 
 const Header = () => {
+  const context = useAppContext();
+
   const navigate = useNavigate();
   const [id, setId] = useState(0);
   const [openMenu, setOpenMenu] = useState(false);
@@ -45,16 +48,16 @@ const Header = () => {
     return `${str.slice(0,6)}...${str.slice(str.length - 6)}`;
   }
 
-  const handleConnect = () => {
-    if((window as any).ethereum) {
-      (window as any).ethereum.request({method:'eth_requestAccounts'}).then((res:any) => {
-        setContent(truncAddress(res[0]));
-      })
-    } else {
-      alert("install metamask extension!")
-    }
-  };
+  const handleConnect = async () => {
+    await context?.connectWallet();
+  }
 
+  useEffect(() => {
+    if(context?.address !== "") {
+      setContent(truncAddress((context as any).address));
+    }
+  }, [context]);
+  
   return (
     <div className="flex justify-between">
       <div className="hidden md:flex gap-8 items-center">
