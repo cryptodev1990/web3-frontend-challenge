@@ -27,8 +27,6 @@ export const AppContextProvider = ({ children }: Props) => {
 
   const [connected, setConnected] = useState(false);
 
-  const privatekey: string = process.env.REACT_APP_PRIVATE_KEY as string;
-
   const FooTokenAddress: string = process.env
     .REACT_APP_FOO_TOKEN_ADDRESS as string;
 
