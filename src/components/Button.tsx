@@ -1,7 +1,7 @@
 import React from "react";
 
 declare type ButtonInterface = {
-  handleClick: any;
+  handleClick: VoidFunction;
   content: string;
 };
 

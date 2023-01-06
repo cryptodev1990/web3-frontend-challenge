@@ -15,10 +15,10 @@ const Swap = () => {
   const Balance = async () => {
     if (context?.connected === true) {
       setFooBalance(
-        Number(await context?.fooToken.balanceOf(context?.address))
+        Number(await context?.fooToken.balanceOf(context?.address)) / 10 ** 18
       );
       setBarBalance(
-        Number(await context?.barToken.balanceOf(context?.address))
+        Number(await context?.barToken.balanceOf(context?.address)) / 10 ** 18
       );
     }
   };
@@ -33,17 +33,14 @@ const Swap = () => {
     } else {
       const tokenAmount = Number(ethers.utils.parseUnits(amount.toString())) / 10 **18;
       let balance = isFooToken ? fooBalance : barBalance;
-      console.log(balance);
       if (tokenAmount > balance)
         window.alert("Inputed amount is bigger than your wallet balance!");
       else {
         const exchangeAddress = process.env.REACT_APP_EXCHANGE_ADDRESS;
         isFooToken
           ? await context?.fooToken
-              .connect(context?.wallet)
               .approve(exchangeAddress, ethers.BigNumber.from(tokenAmount))
           : await context?.barToken
-              .connect(context?.wallet)
               .approve(exchangeAddress, ethers.BigNumber.from(tokenAmount));
       }
     }
@@ -53,7 +50,7 @@ const Swap = () => {
     if (context?.connected === false) {
       window.alert("Please connect Wallet");
     } else {
-      await context?.fooToken.connect(context?.wallet).fund();
+      await context?.fooToken.fund();
     }
   };
 
@@ -63,14 +60,12 @@ const Swap = () => {
     } else {
       const fooTokenAddress = process.env.REACT_APP_FOO_TOKEN_ADDRESS;
       const barTokenAddress = process.env.REACT_APP_BAR_TOKEN_ADDRESS;
-      const tokenAmount = ethers.utils.parseUnits(amount.toString());
+      const tokenAmount = Number(ethers.utils.parseUnits(amount.toString())) / 10 **18;
       isFooToken
         ? await context?.exchange
-            .connect(context?.wallet)
-            .swap(fooTokenAddress, barTokenAddress, tokenAmount)
+            .swap(fooTokenAddress, barTokenAddress, ethers.BigNumber.from(tokenAmount))
         : await context?.exchange
-            .connect(context?.wallet)
-            .swap(barTokenAddress, fooTokenAddress, tokenAmount);
+            .swap(barTokenAddress, fooTokenAddress, ethers.BigNumber.from(tokenAmount));
     }
   };
 

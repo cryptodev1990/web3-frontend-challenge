@@ -11,7 +11,6 @@ declare type Props = {
 };
 
 interface AppContextInterface {
-  wallet: any;
   fooToken: any;
   barToken: any;
   exchange: any;
@@ -41,10 +40,11 @@ export const AppContextProvider = ({ children }: Props) => {
 
   const provider = new ethers.providers.Web3Provider((window as any).ethereum);
 
-  const wallet = new ethers.Wallet(privatekey, provider);
-  const fooToken = FooToken__factory.connect(FooTokenAddress, provider);
-  const barToken = BarToken__factory.connect(BarTokenAddress, provider);
-  const exchange = Exchange__factory.connect(ExchangeAddress, provider);
+  // const wallet = new ethers.Wallet(privatekey, provider);
+  const signer = provider.getSigner();
+  const fooToken = FooToken__factory.connect(FooTokenAddress, signer);
+  const barToken = BarToken__factory.connect(BarTokenAddress, signer);
+  const exchange = Exchange__factory.connect(ExchangeAddress, signer);
 
   const connectWallet = async () => {
     if ((window as any).ethereum) {
@@ -62,7 +62,6 @@ export const AppContextProvider = ({ children }: Props) => {
     <AppContext.Provider
       value={
         {
-          wallet,
           fooToken,
           barToken,
           exchange,

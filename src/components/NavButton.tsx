@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 declare type HeaderType = {
   content: String;
   clicked: Boolean;
-  handleClick: any;
+  handleClick: VoidFunction;
 };
 
 const Navbarbutton = (props: HeaderType) => {
