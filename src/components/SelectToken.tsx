@@ -1,8 +1,9 @@
 import React from "react";
 
 declare type PropType = {
-  token: String;
-  setAmount: any
+  setToken: Function;
+  token: boolean;
+  setAmount: Function;
 };
 
 const SelectToken = (props: PropType) => {
@@ -17,8 +18,8 @@ const SelectToken = (props: PropType) => {
         name="tokenAmount"
         onChange={async (e) => await props.setAmount(e?.target.value)}
       />
-      <h2 className="bg-app-dark-select px-8 py-2 rounded-full font-semibold text-xl">
-        {props.token}
+      <h2 className="bg-app-dark-select px-8 py-2 rounded-full font-semibold text-xl hover:cursor-pointer active:bg-gray-700" onClick={async () => await props.setToken(!props.token)}>
+        {props.token ? "Foo" : "Bar"}
       </h2>
     </div>
   );

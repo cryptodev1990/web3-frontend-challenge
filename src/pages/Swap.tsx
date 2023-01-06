@@ -7,34 +7,44 @@ import Button from "../components/Button";
 const Swap = () => {
   const context = useAppContext();
 
-  const [fooAmount, setFooAmount] = useState(0);
+  const [fooBalance, setFooBalance] = useState(0);
+  const [barBalance, setBarBalance] = useState(0);
+  const [amount, setAmount] = useState(1);
+  const [isFooToken, setIsFooToken] = useState(true);
 
-  const [amountFoo, setAmountFoo] = useState(1);
-
-  const fooBalance = async () => {
+  const Balance = async () => {
     if (context?.connected === true) {
-      setFooAmount(Number(await context?.fooToken.balanceOf(context?.address)));
+      setFooBalance(
+        Number(await context?.fooToken.balanceOf(context?.address))
+      );
+      setBarBalance(
+        Number(await context?.barToken.balanceOf(context?.address))
+      );
     }
   };
 
   useEffect(() => {
-    fooBalance();
+    Balance();
   }, [context]);
 
   const HandleApprove = async () => {
     if (context?.connected === false) {
       window.alert("Please connect Wallet");
     } else {
-      const amountNumber = amountFoo.toString();
-      const amount = Number(ethers.utils.parseUnits(amountNumber));
-      console.log(amount > fooAmount);
-      if (amount > fooAmount)
+      const tokenAmount = Number(ethers.utils.parseUnits(amount.toString())) / 10 **18;
+      let balance = isFooToken ? fooBalance : barBalance;
+      console.log(balance);
+      if (tokenAmount > balance)
         window.alert("Inputed amount is bigger than your wallet balance!");
       else {
         const exchangeAddress = process.env.REACT_APP_EXCHANGE_ADDRESS;
-        await context?.fooToken
-          .connect(context?.wallet)
-          .approve(exchangeAddress, amount);
+        isFooToken
+          ? await context?.fooToken
+              .connect(context?.wallet)
+              .approve(exchangeAddress, ethers.BigNumber.from(tokenAmount))
+          : await context?.barToken
+              .connect(context?.wallet)
+              .approve(exchangeAddress, ethers.BigNumber.from(tokenAmount));
       }
     }
   };
@@ -53,11 +63,14 @@ const Swap = () => {
     } else {
       const fooTokenAddress = process.env.REACT_APP_FOO_TOKEN_ADDRESS;
       const barTokenAddress = process.env.REACT_APP_BAR_TOKEN_ADDRESS;
-      const amountNumber = amountFoo.toString();
-      const amount = ethers.utils.parseUnits(amountNumber);
-      await context?.exchange
-        .connect(context?.wallet)
-        .swap(fooTokenAddress, barTokenAddress, amount);
+      const tokenAmount = ethers.utils.parseUnits(amount.toString());
+      isFooToken
+        ? await context?.exchange
+            .connect(context?.wallet)
+            .swap(fooTokenAddress, barTokenAddress, tokenAmount)
+        : await context?.exchange
+            .connect(context?.wallet)
+            .swap(barTokenAddress, fooTokenAddress, tokenAmount);
     }
   };
 
@@ -66,7 +79,11 @@ const Swap = () => {
       <div className="flex bg-app-dark-swap flex-col px-3 py-5 w-96 border-app-dark rounded-2xl ">
         <h2 className="mb-3 text-3xl px-3">FooBar Swap</h2>
         <div className="flex flex-col gap-5">
-          <SelectToken token="Foo" setAmount={setAmountFoo} />
+          <SelectToken
+            setToken={setIsFooToken}
+            setAmount={setAmount}
+            token={isFooToken}
+          />
           <Button handleClick={HandleMint} content="Mint" />
           <Button handleClick={HandleApprove} content="Approve" />
           <Button handleClick={HandleSwap} content="Swap" />
